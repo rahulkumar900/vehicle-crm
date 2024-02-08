@@ -1,7 +1,10 @@
-import express from 'express'
-const router = express.Router()
-import {createApplication} from '../controller/application.controller';
+import express from "express";
+const router = express.Router();
+import {
+  createApplication,
+  getApplication,
+} from "../controller/application.controller";
 
-router.route("/application").post(createApplication);
+router.route("/application").get(getApplication).post(createApplication);
 
 export default router;

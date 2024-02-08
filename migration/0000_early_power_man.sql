@@ -22,10 +22,12 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"applicationId" uuid NOT NULL,
 	"password" varchar(256) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_email_applicationId_pk" PRIMARY KEY("email","applicationId")
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "roles_id_index" ON "roles" ("id");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "users_id_index" ON "users" ("id");--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "roles" ADD CONSTRAINT "roles_applicationId_application_id_fk" FOREIGN KEY ("applicationId") REFERENCES "application"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION

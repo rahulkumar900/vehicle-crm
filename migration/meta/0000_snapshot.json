@@ -1,5 +1,5 @@
 {
-  "id": "dbf91a23-b74a-4525-9015-f8d32c35f5c1",
+  "id": "f911d039-5081-4814-8700-1e6cd201fee4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -170,7 +170,15 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "users_id_index": {
+          "name": "users_id_index",
+          "columns": [
+            "id"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "users_applicationId_application_id_fk": {
           "name": "users_applicationId_application_id_fk",
@@ -186,7 +194,22 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "users_email_applicationId_pk": {
+          "name": "users_email_applicationId_pk",
+          "columns": [
+            "email",
+            "applicationId"
+          ]
+        },
+        "users_cpk": {
+          "name": "users_cpk",
+          "columns": [
+            "email",
+            "applicationId"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     }
   },
