@@ -4,7 +4,7 @@ import { users } from "../db/schema";
 import { Request, Response } from "express";
 import { string, z } from "zod";
 import { eq } from "drizzle-orm";
-import { getById } from "./utils";
+import { getById, create } from "./utils";
 
 const userSchema = z.object({
   email: z.string().email(),
@@ -37,7 +37,8 @@ export const createUser = async (req: Request, res: Response) => {
     // Validate request body
     const newUser = userSchema.parse(req.body);
 
-    const insertedData = await db.insert(users).values(newUser).returning();
+    // const insertedData = await db.insert(users).values(newUser).returning();
+    const insertedData = await create(db, users, newUser);
     res.status(201).json(insertedData);
   } catch (err) {
     console.error("Error creating user:", err);

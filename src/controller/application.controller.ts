@@ -1,10 +1,12 @@
 import { db } from "../db";
 import { applications } from "../db/schema";
 import { Request, Response } from "express";
-import { create, getById } from "./utils";
-import { string, z } from "zod";
+import { create, destroy, getById, update } from "./utils";
+import { ZodVoid, string, z } from "zod";
+import { eq } from "drizzle-orm";
+
 const applicationSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, { message: "Name Field is Requred!" }),
 });
 
 const reqTdSchema = z
@@ -26,6 +28,11 @@ export const createApplication = async (
   try {
     // Validate request body
     const name = applicationSchema.parse(req.body);
+    console.log(name);
+    if (name.name === "") {
+      res.status(400).json({ message: "Name Field is Required" });
+      return;
+    }
     const insertedData = await create(db, applications, name);
     res.status(201).json(insertedData);
   } catch (err) {
@@ -37,17 +44,33 @@ export const createApplication = async (
     }
   }
 };
-
-export const applicationById = async (req: Request, res: Response) => {
+export const getApplication = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const reqId = reqTdSchema.parse(req.params.userId);
+    const result = await db.select().from(applications);
+    // const result  = await db.query.users.findMany();
+    res.status(200).json(result);
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const applicationById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const reqId = reqTdSchema.parse(req.params.appId);
+    console.log(reqId);
     const result = await getById(db, applications, reqId);
-    console.log(result);
     if (result.length < 1) {
-      return res.status(400).json({
+      res.status(400).json({
         data: [],
         message: "User Not Found",
       });
+      return;
     }
     res
       .status(200)
@@ -62,16 +85,42 @@ export const applicationById = async (req: Request, res: Response) => {
   }
 };
 
-export const getApplication = async (
+export const updateApplication = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const result = await db.select().from(applications);
-    // const result  = await db.query.users.findMany();
-    res.status(200).json(result);
+    const appId = reqTdSchema.parse(req.params.appId);
+    const data = applicationSchema.parse(req.body);
+    const updatedData = await update(db, applications, data, appId);
+    res.status(400).json({
+      data: updatedData,
+      message: "Updated Successfully ",
+    });
   } catch (err) {
-    console.error("Error fetching users:", err);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error creating user:", err);
+    if (err instanceof z.ZodError) {
+      res.status(400).json({ message: err.errors[0].message });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+};
+
+export const deleteApplication = async (req: Request, res: Response) => {
+  try {
+    const refId = reqTdSchema.parse(req.params.appId);
+    const removedUser = await destroy(db, applications, refId);
+    res.status(400).json({
+      data: removedUser,
+      message: "Application deleted successfully",
+    });
+  } catch (err) {
+    console.error("Error creating user:", err);
+    if (err instanceof z.ZodError) {
+      res.status(400).json({ message: err.errors[0].message });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 };
