@@ -20,5 +20,5 @@ export const update = async (db: any, model: any, data: {}, refid: string) => {
 };
 
 export const destroy = async (db: any, model: any, refid: string) => {
-  return await db.delete(applications).where(eq(model.id, refid)).returning();
+  return await db.delete(model).where(eq(model.id, refid)).returning();
 };

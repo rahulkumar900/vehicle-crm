@@ -15,6 +15,12 @@ CREATE TABLE IF NOT EXISTS "roles" (
 	CONSTRAINT "roles_name_applicationId_pk" PRIMARY KEY("name","applicationId")
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "sites" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar NOT NULL,
+	"parent_id" integer
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
 	"email" varchar(256) NOT NULL,

@@ -1,6 +1,6 @@
 {
-  "id": "a8137874-ebb9-4136-9f34-c54a5b2699a0",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "7b47f3cd-7c5b-4145-aee7-8bc86a0bbbd5",
+  "prevId": "a8137874-ebb9-4136-9f34-c54a5b2699a0",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -141,6 +141,20 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
